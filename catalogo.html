@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo Mayorista — Miró</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/logo.webp" alt="Miró Logo" class="navbar__logo">
+        <div class="navbar__name">
+          <span class="navbar__name-main">MIRÓ</span>
+          <span class="navbar__name-sub">Distribuidora Mayorista</span>
+        </div>
+      </a>
+      <div class="navbar__links">
+        <a href="index.html">Inicio</a>
+        <a href="catalogo.html" class="active">Catálogo</a>
+        <a href="contacto.html">Contacto</a>
+        <button class="navbar__cta" id="cartTriggerNav" style="background:var(--navy-mid); border:1px solid var(--gold);">
+          🛒 Carrito (<span class="cart-count-badge">0</span>)
+        </button>
+      </div>
+      <button class="navbar__hamburger" id="menuToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Inicio</a>
+    <a href="catalogo.html" class="active">Catálogo</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+
+  <div class="page-content">
+    <div class="catalogo-layout">
+
+      <aside class="catalogo-sidebar">
+        <h3 class="sidebar__title">Buscar Productos</h3>
+        <input type="text" id="searchInput" class="sidebar__search" placeholder="Ej: Arroz, Puré, Galletitas...">
+
+        <h3 class="sidebar__title js-cat-title" style="margin-top: 24px;">Categorías</h3>
+
+        <!-- Botón toggle de categorías: solo visible en mobile, del lado opuesto al carrito (en la barra de filtros) -->
+        <button class="mobile-cat-toggle" id="mobileCatToggle" aria-expanded="false">
+          <span id="mobileCatLabel">Todos los Rubros</span>
+          <span class="mobile-cat-toggle__arrow">▾</span>
+        </button>
+
+        <!-- Panel colapsable en mobile / lista fija en desktop -->
+        <div class="mobile-cat-panel" id="mobileCatPanel">
+          <div class="sidebar__filters categories-filter-group desktop-only" id="categoriesFilterContainer"></div>
+        </div>
+      </aside>
+
+      <main class="catalogo-main">
+        <div class="catalogo-header">
+          <div>
+            <h1 class="catalogo-header__title">Lista de Precios Mayorista</h1>
+            <span class="catalogo-header__count" id="productCountText">Mostrando 0 productos</span>
+          </div>
+          
+          <div class="catalogo-controls">
+            <select id="sortSelect" class="sort-select">
+              <option value="default">Ordenar por</option>
+              <option value="alpha-asc">Nombre (A-Z)</option>
+              <option value="price-asc">Precio: Menor a Mayor</option>
+              <option value="price-desc">Precio: Mayor a Menor</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="productos-grid" id="productosGrid">
+          </div>
+
+        <div id="emptyState" class="empty-state" style="display: none; text-align: center; padding: 48px;">
+          <p class="data-placeholder">No se encontraron productos que coincidan con los filtros.</p>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <button class="cart-btn-fixed" id="floatingCartBtn">
+    <span>🛒 Mi Pedido</span>
+    <span class="cart-badge" id="cartBadgeCount">0</span>
+  </button>
+
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <h3 class="cart-drawer__title">Resumen de Compra</h3>
+      <button class="cart-close-btn" id="closeCartBtn">×</button>
+    </div>
+    
+    <div class="cart-items" id="cartItemsContainer">
+      </div>
+
+    <div class="cart-total" style="background: var(--gray-100); border-top: 1px solid var(--cream-dark);">
+      <div class="cart-total-row">
+        <span class="cart-total__label">Total Estimado:</span>
+        <span class="cart-total__amount" id="cartTotalAmount">$0.00</span>
+      </div>
+      <textarea class="cart-note" id="cartNote" rows="2" placeholder="Notas adicionales (Ej: Horario de entrega, aclaraciones sobre bultos)..."></textarea>
+      <button class="whatsapp-checkout-btn" id="whatsappCheckoutBtn">
+        Enviar Pedido por WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__bottom" style="border-top: none; padding-top: 0;">
+        <span>© 2026 Miró Distribuidora Mayorista. Todos los derechos reservados.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
