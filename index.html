@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miró Distribuidora Mayorista — Desde 1960</title>
   <link rel="stylesheet" href="css/style.css">
-  </head>
+  <link rel="icon" type="image/webp" href="assets/logo.webp">
+</head>
 <body>
 
   <nav class="navbar">
     <div class="navbar__inner">
       <a href="index.html" class="navbar__brand">
-        <img src="assets/logo.webp" alt="Miró Logo" class="navbar__logo">
+        <div class="navbar__logo-container">
+          <img src="assets/logo.webp" alt="Miró Logo" class="navbar__logo">
+        </div>
         <div class="navbar__name">
           <span class="navbar__name-main">MIRÓ</span>
           <span class="navbar__name-sub">Distribuidora Mayorista</span>
@@ -63,7 +66,9 @@
           <div class="hero__logo-wrap">
             <div class="hero__logo-ring"></div>
             <div class="hero__logo-ring-2"></div>
-            <img src="assets/logo.webp" alt="Miró Mayorista" class="hero__logo-img">
+            <div class="hero__logo-container">
+              <img src="assets/logo.webp" alt="Miró Mayorista" class="hero__logo-img">
+            </div>
           </div>
         </div>
       </div>
@@ -97,34 +102,59 @@
 
         <div class="categories-grid" id="categoriesGrid">
           <a href="catalogo.html?cat=Almacén" class="cat-card">
-            <span class="cat-card__icon">🥫</span>
+            <span class="cat-card__icon">🌾</span>
             <span class="cat-card__name">Almacén</span>
             <span class="cat-card__count">Productos esenciales</span>
           </a>
-          <a href="catalogo.html?cat=Bebidas" class="cat-card">
-            <span class="cat-card__icon">🥤</span>
-            <span class="cat-card__name">Bebidas</span>
-            <span class="cat-card__count">Con y sin alcohol</span>
+          <a href="catalogo.html?cat=Aderezos e individuales" class="cat-card">
+            <span class="cat-card__icon">🫙</span>
+            <span class="cat-card__name">Aderezos e individuales</span>
+            <span class="cat-card__count">Salsas y condimentos</span>
           </a>
-          <a href="catalogo.html?cat=Snacks" class="cat-card">
-            <span class="cat-card__icon">🍟</span>
-            <span class="cat-card__name">Snacks</span>
-            <span class="cat-card__count">Copetín y papas</span>
+          <a href="catalogo.html?cat=Repostería y dulces" class="cat-card">
+            <span class="cat-card__icon">🍮</span>
+            <span class="cat-card__name">Repostería y dulces</span>
+            <span class="cat-card__count">Insumos dulces y repostería</span>
+          </a>
+          <a href="catalogo.html?cat=Aceitunas y encurtidos" class="cat-card">
+            <span class="cat-card__icon">🫒</span>
+            <span class="cat-card__name">Aceitunas y encurtidos</span>
+            <span class="cat-card__count">Conservas y aceitunas</span>
+          </a>
+          <a href="catalogo.html?cat=Frutos secos/semillas/legumbres" class="cat-card">
+            <span class="cat-card__icon">🥜</span>
+            <span class="cat-card__name">Frutos secos y legumbres</span>
+            <span class="cat-card__count">Cereales, legumbres y semillas</span>
+          </a>
+          <a href="catalogo.html?cat=Enlatados" class="cat-card">
+            <span class="cat-card__icon">🥫</span>
+            <span class="cat-card__name">Enlatados</span>
+            <span class="cat-card__count">Conservas en lata</span>
+          </a>
+          <a href="catalogo.html?cat=Especias" class="cat-card">
+            <span class="cat-card__icon">🌶️</span>
+            <span class="cat-card__name">Especias</span>
+            <span class="cat-card__count">Condimentos y especias</span>
           </a>
           <a href="catalogo.html?cat=Galletitas" class="cat-card">
             <span class="cat-card__icon">🍪</span>
             <span class="cat-card__name">Galletitas</span>
             <span class="cat-card__count">Dulces y saladas</span>
           </a>
-          <a href="catalogo.html?cat=Golosinas" class="cat-card">
-            <span class="cat-card__icon">🍬</span>
-            <span class="cat-card__name">Golosinas</span>
-            <span class="cat-card__count">Caramelos y chocolates</span>
+          <a href="catalogo.html?cat=Snacks" class="cat-card">
+            <span class="cat-card__icon">🍟</span>
+            <span class="cat-card__name">Snacks</span>
+            <span class="cat-card__count">Copetín y papas fritas</span>
           </a>
           <a href="catalogo.html?cat=Infusiones" class="cat-card">
             <span class="cat-card__icon">☕</span>
             <span class="cat-card__name">Infusiones</span>
             <span class="cat-card__count">Yerba, café y té</span>
+          </a>
+          <a href="catalogo.html?cat=Caldos y saborizantes" class="cat-card">
+            <span class="cat-card__icon">🍲</span>
+            <span class="cat-card__name">Caldos y saborizantes</span>
+            <span class="cat-card__count">Saborizadores y sopas</span>
           </a>
         </div>
       </div>
@@ -173,7 +203,9 @@
     <div class="footer__inner">
       <div class="footer__grid">
         <div>
-          <img src="assets/logo.webp" alt="Miró" class="footer__brand-logo">
+          <div class="footer__brand-logo-container">
+            <img src="assets/logo.webp" alt="Miró" class="footer__brand-logo">
+          </div>
           <h3 class="footer__brand-name">MIRÓ</h3>
           <p class="footer__brand-sub">Distribuidora Mayorista</p>
           <p class="footer__brand-desc">Abasteciendo a la industria comercial desde 1960 con seriedad, compromiso y precios de escala.</p>
@@ -187,15 +219,6 @@
           </div>
         </div>
         <div>
-          <h4 class="footer__col-title">Rubros</h4>
-          <div class="footer__links">
-            <a href="catalogo.html?cat=Almacén">Almacén</a>
-            <a href="catalogo.html?cat=Bebidas">Bebidas</a>
-            <a href="catalogo.html?cat=Snacks">Snacks</a>
-            <a href="catalogo.html?cat=Limpieza">Limpieza</a>
-          </div>
-        </div>
-        <div>
           <h4 class="footer__col-title">Contacto</h4>
           <div class="footer__contact-item">
             <span class="footer__contact-icon">📍</span>
@@ -204,10 +227,6 @@
           <div class="footer__contact-item">
             <span class="footer__contact-icon">📞</span>
             <span>+54 9 11 6270-8262</span>
-          </div>
-          <div class="footer__contact-item">
-            <span class="footer__contact-icon">✉️</span>
-            <span>ventas@miromayorista.com.ar</span>
           </div>
         </div>
       </div>

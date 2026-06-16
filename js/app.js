@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (document.getElementById("productosGrid")) {
     initCatalogUI();
-    checkUrlParams();
     loadProductsFromSheet();
   }
 
@@ -125,12 +124,38 @@ function initMobileCatPanel() {
   });
 }
 
-// ── PARÁMETROS URL ─────────────────────────────────────────────
+// ── NORMALIZACIÓN Y PARÁMETROS URL ─────────────────────────────
+function normalizeCategory(cat) {
+  if (!cat) return "";
+  return cat.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function checkUrlParams() {
   const params   = new URLSearchParams(window.location.search);
   const catParam = params.get("cat");
   if (catParam) {
-    currentCategory = catParam;
+    const normParam = normalizeCategory(catParam);
+    
+    // Mapeo inteligente para categorías con nombres diferentes
+    let targetNorm = normParam;
+    if (normParam === "golosinas") {
+      targetNorm = "reposteria y dulces";
+    } else if (normParam === "frutos secos y legumbres") {
+      targetNorm = "frutos secos/semillas/legumbres";
+    }
+
+    // Buscar si existe un rubro que coincida en la planilla
+    const rubros = [...new Set(todosLosProductos.map(p => p.category))];
+    const matched = rubros.find(r => normalizeCategory(r) === targetNorm);
+    if (matched) {
+      currentCategory = matched;
+    } else {
+      currentCategory = catParam;
+    }
   }
 }
 
@@ -159,6 +184,7 @@ async function loadProductsFromSheet() {
 
       if (todosLosProductos.length === 0) throw new Error("Sin productos válidos en el CSV");
 
+      checkUrlParams();
       buildCategoryFilters();
       renderCatalog();
       return; // Éxito, salir del loop
@@ -360,15 +386,25 @@ function renderCatalog() {
   // 1. Filtrar
   let items = todosLosProductos.filter(p => {
     const matchCat    = currentCategory === "all" || p.category === currentCategory;
-    const matchSearch = !searchQuery ||
-      p.name.toLowerCase().includes(searchQuery) ||
-      (p.brand || "").toLowerCase().includes(searchQuery) ||
-      p.category.toLowerCase().includes(searchQuery);
+    const matchSearch = !searchQuery || (() => {
+      const searchWords = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+      return searchWords.every(word => 
+        p.name.toLowerCase().includes(word) ||
+        (p.brand || "").toLowerCase().includes(word) ||
+        p.category.toLowerCase().includes(word)
+      );
+    })();
     return matchCat && matchSearch;
   });
 
   // 2. Ordenar
-  if (currentSort === "alpha-asc") {
+  if (currentSort === "default" || currentSort === "category-asc") {
+    items.sort((a, b) => {
+      const catComp = a.category.localeCompare(b.category, "es");
+      if (catComp !== 0) return catComp;
+      return a.name.localeCompare(b.name, "es");
+    });
+  } else if (currentSort === "alpha-asc") {
     items.sort((a, b) => a.name.localeCompare(b.name, "es"));
   } else if (currentSort === "price-asc") {
     items.sort((a, b) => getPrecio(a) - getPrecio(b));
