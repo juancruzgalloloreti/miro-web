@@ -299,7 +299,18 @@ function parseCSVLine(line) {
 
 function parsePrecio(val) {
   if (!val) return 0;
-  const clean = String(val).replace(/[^\d.,]/g, "").replace(",", ".");
+  let clean = String(val).replace(/[^\d.,]/g, "");
+  if (clean.includes(",") && clean.includes(".")) {
+    clean = clean.replace(/\./g, "").replace(",", ".");
+  } else if (clean.includes(",")) {
+    clean = clean.replace(",", ".");
+  } else if (clean.includes(".")) {
+    const parts = clean.split(".");
+    if (parts.length === 2 && parts[1].length === 3) {
+      // e.g. "18.900" en ARS es dieciocho mil novecientos, no 18.9 pesos.
+      clean = clean.replace(".", "");
+    }
+  }
   return parseFloat(clean) || 0;
 }
 
