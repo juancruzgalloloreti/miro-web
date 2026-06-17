@@ -63,7 +63,7 @@ let todosLosProductos = [];
 let cart              = [];
 let currentCategory   = "all";
 let searchQuery       = "";
-let currentSort       = "default";
+let currentSort       = "category-asc";
 let precioTipo        = "B"; // "A" o "B" → Factura A o Factura B
 
 // ── INICIALIZACIÓN ─────────────────────────────────────────────
