@@ -20,8 +20,8 @@ const RUBRO_ICONS = {
   "Almacen":                        "🌾",
   "Almacén":                        "🌾",
   "Enlatados":                      "🥫",
-  "Aderezos e individuales":        "🫙",
-  "Aceitunas y encurtidos":         "🫒",
+  "Aderezos e individuales":        "🥄",
+  "Aceitunas y encurtidos":         "🌿",
   "Especias":                       "🌶️",
   "Reposteria y dulces":            "🍮",
   "Repostería y dulces":            "🍮",
@@ -490,12 +490,14 @@ function initCart() {
   const openCart = () => {
     if (cartDrawer)  cartDrawer.classList.add("open");
     if (cartOverlay) cartOverlay.classList.add("open");
+    document.body.style.overflow = "hidden"; // Bloquea scroll del fondo
     renderCartItems();
   };
 
   const closeCart = () => {
     if (cartDrawer)  cartDrawer.classList.remove("open");
     if (cartOverlay) cartOverlay.classList.remove("open");
+    document.body.style.overflow = ""; // Restaura scroll
   };
 
   if (floatingCartBtn) floatingCartBtn.addEventListener("click", openCart);
@@ -614,6 +616,10 @@ function sendWhatsAppOrder() {
     return;
   }
 
+  // Cerrar el drawer y restaurar scroll antes de abrir WhatsApp
+  document.getElementById("cartDrawer")?.classList.remove("open");
+  document.getElementById("cartOverlay")?.classList.remove("open");
+  document.body.style.overflow = "";
   const note     = (document.getElementById("cartNote")?.value || "").trim();
   const tipoFact = precioTipo === "A" ? "Factura A" : "Factura B";
 
