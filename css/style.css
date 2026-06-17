@@ -991,12 +991,14 @@ ul { list-style: none; }
   top: 0; right: -420px;
   width: 420px;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height — fix para iOS/Android con barra del browser */
   background: var(--white);
   z-index: 900;
   display: flex;
   flex-direction: column;
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+  overflow: hidden; /* evita scroll en el contenedor raíz */
 }
 .cart-drawer.open { right: 0; }
 
@@ -1114,6 +1116,8 @@ ul { list-style: none; }
   flex-direction: column;
   gap: 12px;
   padding: 20px;
+  flex-shrink: 0; /* nunca comprimir el footer — fix botón WhatsApp en mobile */
+  padding-bottom: max(20px, env(safe-area-inset-bottom)); /* respeta notch/home indicator */
 }
 
 .cart-total__label {
@@ -1147,7 +1151,7 @@ ul { list-style: none; }
 
 .whatsapp-checkout-btn {
   width: 100%;
-  padding: 14px;
+  padding: 14px 16px;
   background: #25d366;
   color: var(--white);
   border: none;
@@ -1160,8 +1164,14 @@ ul { list-style: none; }
   justify-content: center;
   gap: 8px;
   transition: background var(--transition);
+  min-height: 52px; /* altura mínima garantizada en touch devices */
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* mejora respuesta táctil */
+  flex-shrink: 0;
 }
 .whatsapp-checkout-btn:hover { background: #1db954; }
+.whatsapp-checkout-btn:active { background: #128c7e; transform: scale(0.98); }
 
 /* ────────────────────────────────────────────────────────────
    CONTACTO PAGE
