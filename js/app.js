@@ -4,7 +4,7 @@
    ============================================================ */
 
 // ── CONFIGURACIÓN ─────────────────────────────────────────────
-const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5fqjpLId7TXkavg3YwBQSlLFEsI_ZSg8IrbR-69sOUjZla8tbJdRaJbk6M9apjNNaDtPC02n5w1Np/pub?gid=1466818005&single=true&output=csv";
+const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5fqjpLId7TXkavg3YwBQSlLFEsI_ZSg8IrbR-69sOUjZla8tbJdRaJbk6M9apjNNaDtPC02n5w1Np/pub?output=csv";
 const WHATSAPP_NUMBER   = "5491162708262"; // ← número actualizado
 
 // URLs para cargar el sheet (se prueban en orden hasta que una funcione)
@@ -211,13 +211,14 @@ async function loadProductsFromSheet() {
 }
 
 /*
-  Estructura del sheet (encabezados buscados dinámicamente):
-  Col A (idx 0)  → Producto
-  Col S (idx 18) → Marca
-  Col AA (idx 26)→ Presentación
-  Col AI (idx 34)→ FACTURA B
-  Col AM (idx 38)→ FACTURA A
-  Col AQ (idx 42)→ RUBRO
+  Estructura del sheet (encabezados en columnas consecutivas):
+  Col A (idx 0) → Producto
+  Col B (idx 1) → Marca
+  Col C (idx 2) → Presentación
+  Col D (idx 3) → FACTURA B
+  Col E (idx 4) → FACTURA A
+  Col F (idx 5) → RUBRO
+  Col G (idx 6) → IMAGEN
 */
 function parseSheetCSV(csvText) {
   const lines    = csvText.split("\n");
@@ -228,8 +229,8 @@ function parseSheetCSV(csvText) {
   for (let i = 0; i < lines.length; i++) {
     const cols = parseCSVLine(lines[i]);
     if (
-      cols[0]  && cols[0].trim().toLowerCase()  === "producto" &&
-      cols[18] && cols[18].trim().toLowerCase() === "marca"
+      cols[0] && cols[0].trim().toLowerCase() === "producto" &&
+      cols[1] && cols[1].trim().toLowerCase() === "marca"
     ) {
       headerRow = i;
       break;
@@ -237,7 +238,7 @@ function parseSheetCSV(csvText) {
   }
 
   if (headerRow === -1) {
-    console.warn("No se encontró fila de encabezados con 'Producto' en col A y 'Marca' en col S");
+    console.warn("No se encontró fila de encabezados con 'Producto' en col A y 'Marca' en col B");
     return [];
   }
 
@@ -245,12 +246,13 @@ function parseSheetCSV(csvText) {
   for (let i = headerRow + 1; i < lines.length; i++) {
     const cols = parseCSVLine(lines[i]);
 
-    const nombre       = (cols[0]  || "").trim();
-    const marca        = (cols[18] || "").trim();
-    const presentacion = (cols[26] || "").trim();
-    const precioB      = parsePrecio(cols[34]);
-    const precioA      = parsePrecio(cols[38]);
-    const rubro        = (cols[41] || "").trim();
+    const nombre       = (cols[0] || "").trim();
+    const marca        = (cols[1] || "").trim();
+    const presentacion = (cols[2] || "").trim();
+    const precioB      = parsePrecio(cols[3]);
+    const precioA      = parsePrecio(cols[4]);
+    const rubro        = (cols[5] || "").trim();
+    const imagen       = (cols[6] || "").trim();
 
     // Ignorar filas sin nombre o sin precio
     if (!nombre || (!precioB && !precioA)) continue;
@@ -265,12 +267,13 @@ function parseSheetCSV(csvText) {
       priceB:   precioB,
       priceA:   precioA,
       category: rubro || "Otros",
+      image:    imagen || "",
     });
   }
 
   console.log(`[Catálogo] Header detectado en fila ${headerRow}. Productos parseados: ${products.length}`);
   if (products.length > 0) {
-    console.log(`[Catálogo] Primeros 3 rubros (cols[41]):`, products.slice(0,3).map(p => p.category));
+    console.log(`[Catálogo] Primeros 3 rubros:`, products.slice(0,3).map(p => p.category));
   }
   return products;
 }
@@ -453,11 +456,18 @@ function buildCard(prod) {
   const color      = RUBRO_COLORS[prod.category] || "#888888";
   const badgeLabel = precioTipo === "A" ? "Fact. A" : "Fact. B";
 
+  const imgHtml = prod.image
+    ? `<div class="producto-card__img-container">
+         <img src="${prod.image}" alt="${prod.name}" class="producto-card__img" loading="lazy">
+       </div>`
+    : '';
+
   return `
     <div class="producto-card" style="border-left-color:${color}">
       <span class="producto-card__cat" style="background:${color}20;color:${color}">${prod.category}</span>
       <div class="producto-card__body">
         <div class="producto-card__info">
+          ${imgHtml}
           <div class="producto-card__left">
             <h4 class="producto-card__name">${prod.name}</h4>
             <span class="producto-card__meta">${prod.brand || "—"}${prod.pack ? ` · ${prod.pack}` : ""}</span>

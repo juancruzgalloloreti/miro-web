@@ -1564,6 +1564,28 @@ ul { list-style: none; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.producto-card__img-container {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream-light);
+  border: 1.5px solid var(--cream-dark);
+  flex-shrink: 0;
+  margin-top: 10px;
+  transition: transform var(--transition);
+}
+.producto-card:hover .producto-card__img-container {
+  transform: scale(1.05);
+}
+.producto-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .producto-card__right {
   display: flex;
   flex-direction: column;
