@@ -4,7 +4,7 @@
    ============================================================ */
 
 // ── CONFIGURACIÓN ─────────────────────────────────────────────
-const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5fqjpLId7TXkavg3YwBQSlLFEsI_ZSg8IrbR-69sOUjZla8tbJdRaJbk6M9apjNNaDtPC02n5w1Np/pub?output=csv";
+const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/1gsa3Gb5FmvKVPoat_8i2fxYcTLnc9kqpQBqt5nYJyRM/export?format=csv";
 const WHATSAPP_NUMBER   = "5491162708262"; // ← número actualizado
 
 // URLs para cargar el sheet (se prueban en orden hasta que una funcione)
@@ -267,7 +267,7 @@ function parseSheetCSV(csvText) {
       priceB:   precioB,
       priceA:   precioA,
       category: rubro || "Otros",
-      image:    imagen || "",
+      image:    formatImageUrl(imagen),
     });
   }
 
@@ -315,6 +315,27 @@ function parsePrecio(val) {
     }
   }
   return parseFloat(clean) || 0;
+}
+
+// Convierte enlaces de Google Drive compartidos a enlaces directos de imagen
+function formatImageUrl(url) {
+  if (!url) return "";
+  url = url.trim();
+
+  // Si es un enlace de Google Drive
+  if (url.includes("drive.google.com")) {
+    // Formato 1: drive.google.com/file/d/FILE_ID/view
+    const fileDMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileDMatch && fileDMatch[1]) {
+      return `https://lh3.googleusercontent.com/d/${fileDMatch[1]}`;
+    }
+    // Formato 2: drive.google.com/open?id=FILE_ID
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idMatch && idMatch[1]) {
+      return `https://lh3.googleusercontent.com/d/${idMatch[1]}`;
+    }
+  }
+  return url;
 }
 
 // ── FILTROS DE CATEGORÍAS (dinámicos desde el sheet) ──────────
@@ -456,32 +477,30 @@ function buildCard(prod) {
   const color      = RUBRO_COLORS[prod.category] || "#888888";
   const badgeLabel = precioTipo === "A" ? "Fact. A" : "Fact. B";
 
-  const imgHtml = prod.image
-    ? `<div class="producto-card__img-container">
-         <img src="${prod.image}" alt="${prod.name}" class="producto-card__img" loading="lazy">
-       </div>`
-    : '';
+  // Use a nice placeholder if no image exists
+  const imgUrl = prod.image || 'assets/logo.webp';
+  const hasImgClass = prod.image ? '' : 'producto-card__img--placeholder';
 
   return `
-    <div class="producto-card" style="border-left-color:${color}">
-      <span class="producto-card__cat" style="background:${color}20;color:${color}">${prod.category}</span>
+    <div class="producto-card" data-category="${prod.category}">
+      <div class="producto-card__img-container">
+        <img src="${imgUrl}" alt="${prod.name}" class="producto-card__img ${hasImgClass}" loading="lazy">
+      </div>
       <div class="producto-card__body">
-        <div class="producto-card__info">
-          ${imgHtml}
-          <div class="producto-card__left">
-            <h4 class="producto-card__name">${prod.name}</h4>
-            <span class="producto-card__meta">${prod.brand || "—"}${prod.pack ? ` · ${prod.pack}` : ""}</span>
+        <div class="producto-card__badges">
+          <span class="producto-card__badge-stock">✅ EN STOCK</span>
+          <span class="producto-card__badge-cat" style="background:${color}15;color:${color}">${prod.category}</span>
+        </div>
+        <h4 class="producto-card__name" title="${prod.name}">${prod.name}</h4>
+        <span class="producto-card__meta">${prod.brand || "—"}${prod.pack ? ` · ${prod.pack}` : ""}</span>
+        <div class="producto-card__footer">
+          <div class="producto-card__price-wrap">
+            <span class="producto-card__precio">${formatPrecio(precio)}</span>
+            <span class="precio-tipo-badge">${badgeLabel}</span>
           </div>
-          <div class="producto-card__right">
-            <span class="producto-card__precio">
-              ${formatPrecio(precio)}
-              <span class="precio-tipo-badge">${badgeLabel}</span>
-            </span>
-            <div class="producto-card__actions">
-              <input type="number" value="1" min="1" id="qty-${prod.id}" class="producto-card__qty" aria-label="Cantidad">
-              <button class="add-to-cart-btn" onclick="handleAddToCart(${prod.id})" aria-label="Agregar ${prod.name} al carrito">+ Añadir</button>
-            </div>
-          </div>
+          <button class="producto-card__add-btn" onclick="handleAddToCart(${prod.id})" aria-label="Agregar ${prod.name} al carrito">
+            ＋
+          </button>
         </div>
       </div>
     </div>
@@ -577,25 +596,28 @@ function renderCartItems() {
     const precio   = getPrecio(item.product);
     const subtotal = precio * item.quantity;
     total += subtotal;
+
+    // Use placeholder if no image exists
+    const imgUrl = item.product.image || 'assets/logo.webp';
+    const hasImgClass = item.product.image ? '' : 'cart-item__img--placeholder';
+
     return `
-      <div class="cart-item" style="display:flex;justify-content:space-between;align-items:center;
-        padding:10px 16px;border-bottom:1px dashed var(--cream-dark);">
-        <div style="flex:1;min-width:0;">
-          <h5 style="font-size:0.875rem;font-weight:600;color:var(--navy-dark);
-            overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.product.name}</h5>
-          <span style="font-size:0.72rem;color:var(--gray-600);">
+      <div class="cart-item">
+        <div class="cart-item__img-container">
+          <img src="${imgUrl}" alt="${item.product.name}" class="cart-item__img ${hasImgClass}">
+        </div>
+        <div class="cart-item__info">
+          <h5 class="cart-item__name" title="${item.product.name}">${item.product.name}</h5>
+          <span class="cart-item__price">
             ${formatPrecio(precio)} c/u · ${item.product.pack || ""}
           </span>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;margin-left:12px;flex-shrink:0;">
+        <div class="cart-item__qty-actions">
           <button class="qty-btn" onclick="changeQty(${item.product.id},-1)">−</button>
           <span class="qty-val">${item.quantity}</span>
           <button class="qty-btn" onclick="changeQty(${item.product.id},1)">+</button>
-          <span style="font-weight:700;font-size:0.875rem;color:var(--navy-dark);
-            min-width:64px;text-align:right;">${formatPrecio(subtotal)}</span>
-          <button onclick="removeFromCart(${item.product.id})"
-            style="background:none;color:var(--red);font-size:1.1rem;font-weight:700;
-              padding:0 4px;border:none;cursor:pointer;line-height:1;">×</button>
+          <span class="cart-item__subtotal">${formatPrecio(subtotal)}</span>
+          <button class="cart-item__remove" onclick="removeFromCart(${item.product.id})">×</button>
         </div>
       </div>
     `;
