@@ -2051,7 +2051,7 @@ ul { list-style: none; }
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 }
 
 .hero-categories .section__header {
