@@ -108,8 +108,8 @@ ul { list-style: none; }
 .navbar__logo {
   height: 100%;
   width: 100%;
-  object-fit: cover;
-  transform: scale(1.05); /* Slight zoom to crop white corners */
+  object-fit: contain;
+  padding: 4px;
 }
 
 .navbar__name {
@@ -424,8 +424,8 @@ ul { list-style: none; }
 .hero__logo-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transform: scale(1.05); /* Slight zoom to crop white corners */
+  object-fit: contain;
+  padding: 8px;
 }
 
 /* Stats bar */
@@ -691,8 +691,8 @@ ul { list-style: none; }
 .footer__brand-logo {
   height: 100%;
   width: 100%;
-  object-fit: cover;
-  transform: scale(1.05); /* Slight zoom to crop white corners */
+  object-fit: contain;
+  padding: 5px;
 }
 
 .footer__brand-name {
