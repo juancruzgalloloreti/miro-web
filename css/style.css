@@ -533,7 +533,7 @@ ul { list-style: none; }
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
 }
 
@@ -1989,8 +1989,8 @@ ul { list-style: none; }
   /* CTA banner */
   .cta-banner { padding: 36px 24px; }
 
-  /* Grid de categorías en index */
-  .categories-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  /* Grid de categorías en index: 2 columnas desde 600px hacia abajo */
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
 
   /* Controls */
   .catalogo-controls {
@@ -2003,6 +2003,9 @@ ul { list-style: none; }
 @media (max-width: 480px) {
   .footer__grid { grid-template-columns: 1fr; }
   .hero__stat { min-width: 50%; }
+
+  /* Categorías: mantener 2 columnas incluso en pantallas muy pequeñas */
+  .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
   .productos-grid {
     grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)) !important;
