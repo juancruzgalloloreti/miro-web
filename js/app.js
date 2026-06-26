@@ -70,6 +70,7 @@ let precioTipo        = "B"; // "A" o "B" → Factura A o Factura B
 document.addEventListener("DOMContentLoaded", () => {
   initNavigation();
   initMobileCatPanel();
+  initBrandsSlider();
 
   if (document.getElementById("productosGrid")) {
     initCatalogUI();
@@ -78,6 +79,89 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initCart();
 });
+
+// ── SLIDER DE MARCAS (drag + auto-scroll) ──────────────────────
+function initBrandsSlider() {
+  const outer = document.getElementById("brandsTrackOuter");
+  const track = document.getElementById("brandsTrack");
+  if (!outer || !track) return;
+
+  let isDragging = false;
+  let startX     = 0;
+  let scrollLeft = 0;
+  let autoOffset = 0;
+  let rafId      = null;
+  let dragOffset = 0;
+  let lastDragX  = 0;
+  let velocity   = 0;
+
+  // ── Auto-scroll via requestAnimationFrame ──
+  // We disable the CSS animation and drive it manually so drag works seamlessly
+  track.style.animation = "none";
+  const halfWidth = () => track.scrollWidth / 2;
+
+  function autoScroll() {
+    if (!isDragging) {
+      autoOffset += 0.7; // px per frame (~42px/s at 60fps)
+      if (autoOffset >= halfWidth()) autoOffset -= halfWidth();
+    }
+    track.style.transform = `translateX(${-(autoOffset + dragOffset)}px)`;
+    rafId = requestAnimationFrame(autoScroll);
+  }
+  rafId = requestAnimationFrame(autoScroll);
+
+  // ── Mouse drag ──
+  outer.addEventListener("mousedown", e => {
+    isDragging = true;
+    startX     = e.pageX;
+    lastDragX  = e.pageX;
+    velocity   = 0;
+    outer.classList.add("is-dragging");
+  });
+
+  window.addEventListener("mousemove", e => {
+    if (!isDragging) return;
+    velocity   = lastDragX - e.pageX;
+    lastDragX  = e.pageX;
+    dragOffset += velocity;
+    // Wrap dragOffset so it stays meaningful
+    if (dragOffset < 0)              dragOffset += halfWidth();
+    if (dragOffset >= halfWidth())   dragOffset -= halfWidth();
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    outer.classList.remove("is-dragging");
+    // Merge drag offset into autoOffset so drag position is kept
+    autoOffset = (autoOffset + dragOffset) % halfWidth();
+    dragOffset = 0;
+  });
+
+  // ── Touch drag ──
+  outer.addEventListener("touchstart", e => {
+    isDragging = true;
+    startX     = e.touches[0].pageX;
+    lastDragX  = startX;
+    velocity   = 0;
+  }, { passive: true });
+
+  outer.addEventListener("touchmove", e => {
+    if (!isDragging) return;
+    velocity   = lastDragX - e.touches[0].pageX;
+    lastDragX  = e.touches[0].pageX;
+    dragOffset += velocity;
+    if (dragOffset < 0)            dragOffset += halfWidth();
+    if (dragOffset >= halfWidth()) dragOffset -= halfWidth();
+  }, { passive: true });
+
+  outer.addEventListener("touchend", () => {
+    isDragging = false;
+    autoOffset = (autoOffset + dragOffset) % halfWidth();
+    dragOffset = 0;
+  });
+}
+
 
 // ── NAVEGACIÓN RESPONSIVE ─────────────────────────────────────
 function initNavigation() {
