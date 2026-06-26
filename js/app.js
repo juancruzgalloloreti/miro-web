@@ -125,13 +125,17 @@ function initMobileCatPanel() {
 }
 
 // ── NORMALIZACIÓN Y PARÁMETROS URL ─────────────────────────────
-function normalizeCategory(cat) {
-  if (!cat) return "";
-  return cat.toLowerCase()
+function normalizeText(str) {
+  if (!str) return "";
+  return str.toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function normalizeCategory(cat) {
+  return normalizeText(cat);
 }
 
 function checkUrlParams() {
@@ -389,7 +393,7 @@ function initCatalogUI() {
 
   if (searchInput) {
     searchInput.addEventListener("input", e => {
-      searchQuery = e.target.value.toLowerCase().trim();
+      searchQuery = normalizeText(e.target.value);
       renderCatalog();
     });
   }
@@ -422,11 +426,11 @@ function renderCatalog() {
   let items = todosLosProductos.filter(p => {
     const matchCat    = currentCategory === "all" || p.category === currentCategory;
     const matchSearch = !searchQuery || (() => {
-      const searchWords = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+      const searchWords = searchQuery.split(/\s+/).filter(Boolean);
       return searchWords.every(word => 
-        p.name.toLowerCase().includes(word) ||
-        (p.brand || "").toLowerCase().includes(word) ||
-        p.category.toLowerCase().includes(word)
+        normalizeText(p.name).includes(word) ||
+        normalizeText(p.brand).includes(word) ||
+        normalizeText(p.category).includes(word)
       );
     })();
     return matchCat && matchSearch;
