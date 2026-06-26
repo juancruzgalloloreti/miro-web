@@ -394,6 +394,17 @@ function initCatalogUI() {
   if (searchInput) {
     searchInput.addEventListener("input", e => {
       searchQuery = normalizeText(e.target.value);
+      if (searchQuery) {
+        currentCategory = "all";
+        document.querySelectorAll(".cat-filter-btn").forEach(b => {
+          if (b.getAttribute("data-category") === "all") {
+            b.classList.add("active");
+          } else {
+            b.classList.remove("active");
+          }
+        });
+        updateMobileCatLabel();
+      }
       renderCatalog();
     });
   }
